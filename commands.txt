@@ -1,0 +1,4 @@
+python -m pip install -U --force-reinstall -r requirements.txt
+python -m venv virtenv
+virtenv\Scripts\activate
+python -m transcrypt -b -n library

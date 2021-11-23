@@ -1,0 +1,71 @@
+<html>
+   <head>
+      <title>MLA Predictor</title>
+      <link rel="shortcut icon" href="" type="image/x-icon"/>
+      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+      <link href="{{ url_for('static',filename='styles/myIndexStyle.css') }}" rel="stylesheet" type="text/css">
+      <script type="module">import * as library from './static/__target__/library.js'; window.library = library;</script>
+   </head>
+
+   <body>
+    
+     <div id="app">
+      <h1 id="title">Multiple Linear Regression Predictor</h1>
+      <div id="instructionsContainer">
+      </div>
+      <div id="container">
+        <div id="input-container">
+          <form class="form" id="postUser" action="/exercise/new-user" method="post">
+            <h3 class="input-details">Feature Value</h3>
+            <p class="input-details"><code>Add X values for prediction</code></p>
+            <div id="featureValDiv">
+              <input id="featureVal1" type="number" step="any" class="featureValInput" name="featureVal1" placeholder="Feature 1 Value">
+              <input id="featureVal2" type="number" step="any" class="featureValInput" name="featureVal2" placeholder="Feature 2 Value">
+              <input id="featureVal3" type="number" step="any" class="featureValInput" name="featureVal3" placeholder="Feature 3 Value">
+              <input id="featureVal4" type="number" step="any" class="featureValInput" name="featureVal4" placeholder="Feature 4 Value">
+            </div>
+          </form>
+          <form class="form">
+            <h3 class="input-details">Functions</h3>
+            <input id="add" type="button" onclick="library.addFeatures()" value="Add Features">
+            <input id="remove" type="button" onclick="library.removeFeatures()" value="Remove Features">
+            <input id="predict" type="button" onclick="library.predict()" value="Predict">
+            <input id="reset" type="button" onclick="library.reset()" value="Reset">
+            
+          </form>
+          <form class="form">
+            <h3 class="input-details">Feature Names</h3>
+            <p class="input-details"><code>Add feature names</code></p>
+            <div id="featureNameDiv">
+              <input id="feature1" type="text" class="featureInput" name="feature1" placeholder="Feature 1 name">
+              <input id="feature2" type="text" class="featureInput" name="feature2" placeholder="Feature 2 name">
+              <input id="feature3" type="text" class="featureInput" name="feature3" placeholder="Feature 3 name">
+              <input id="feature4" type="text" class="featureInput" name="feature4" placeholder="Feature 4 name">
+            </div>
+            <h3 class="input-details">Target Name</h3>
+            <input id="target" type="text" class="targetInput" name="target" placeholder="Target Name">
+          </form>
+          <div class="form">
+            <h3 class="input-details">Feature Coefficients</h3>
+            <p class="input-details"><code>Add beta values of features</code></p>
+            <div id="coefficientDiv">
+              <input id="intercept" type="number" step="any" class="coefficientInput" name="coefficient1" placeholder="Intercept">
+              <input id="coefficient1" type="number" step="any" class="coefficientInput" name="coefficient1" placeholder="Coefficient 1">
+              <input id="coefficient2" type="number" step="any" class="coefficientInput" name="coefficient2" placeholder="Coefficient 2">
+              <input id="coefficient3" type="number" step="any" class="coefficientInput" name="coefficient3" placeholder="Coefficient 3">
+              <input id="coefficient4" type="number" step="any" class="coefficientInput" name="coefficient4" placeholder="Coefficient 4">
+            </div>
+          </div>
+        </div>
+        <div id="output-container">
+        <h1 id="output-title">Output</h1>
+        <div id="outputMsgBox">
+          <div id="outputMsg">Output appears here</div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+   </body>
+
+</html>
