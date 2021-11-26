@@ -6,7 +6,6 @@
 
 ## Instructions to run locally:
 
-
 1.  Go to the root folder SC02_G10_DDW_2D_Website: `cd SC02_G10_DDW_2D_Website`
 2.  From the root folder, i.e. SC02_G10_DDW_2D_Website, create virtual environment called virtenv: `python -m venv virtenv`
 3.  A folder called virtenv will be created. Now, activate the virtual environment: `virtenv\Scripts\activate`
@@ -14,3 +13,9 @@
 5.  Go into the static folder to compile library.py: `cd /app/static`
 6.  Run Transcrypt on library.py: `python -m transcrypt -b -n library`
 7.  Run flask: `flask run`
+
+## Screenshots:
+
+![Screenshot 1](ss1.png "Screenshot 1")
+![Screenshot 2](ss2.png "Screenshot 2")
+![Screenshot 3](ss3.png "Screenshot 3")
