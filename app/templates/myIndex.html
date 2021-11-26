@@ -31,6 +31,11 @@
             <input id="remove" type="button" onclick="library.removeFeatures()" value="Remove Features">
             <input id="predict" type="button" onclick="library.predict()" value="Predict">
             <input id="reset" type="button" onclick="library.reset()" value="Reset">
+            <h3 class="input-details">ICU Prediction</h3>
+            <label class="switch"> 
+              <input type="checkbox" value="false" onclick="library.toggleIcuPred()">
+              <span class="slider round"></span>
+            </label>
             
           </form>
           <form class="form">

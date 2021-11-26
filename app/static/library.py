@@ -1,6 +1,10 @@
 from org.transcrypt.stubs.browser import *
 import random
-array = []
+
+icuPred = False
+
+meanList = [175.098171,30853510,58.596521,0.899823]
+stdList = [216.521299,58756310,16.010481,0.049789]
 
 defaultFeatureValHtml = """
 <input id="featureVal1" type="number" step="any" class="featureValInput" name="featureVal1" placeholder="Feature 1 Value">
@@ -23,6 +27,28 @@ defaultCoefficientHtml = """
 <input id="coefficient3" type="number" step="any" class="coefficientInput" name="coefficient3" placeholder="Coefficient 3">
 <input id="coefficient4" type="number" step="any" class="coefficientInput" name="coefficient4" placeholder="Coefficient 4">
 """
+
+icuFeatureValHtml = """
+<input id="featureVal1" type="number" step="any" class="featureValInput" name="featureVal1" placeholder="new_cases_smoothed_per_million">
+<input id="featureVal2" type="number" step="any" class="featureValInput" name="featureVal2" placeholder="population">
+<input id="featureVal3" type="number" step="any" class="featureValInput" name="featureVal3" placeholder="stringency_index">
+<input id="featureVal4" type="number" step="any" class="featureValInput" name="featureVal4" placeholder="human_development_index">
+"""
+
+icuFeatureHtml = """
+<input id="feature1" type="text" class="featureInput" name="feature1" readonly placeholder="Feature 1 name" value="new_cases_smoothed_per_million">
+<input id="feature2" type="text" class="featureInput" name="feature2" readonly placeholder="Feature 2 name" value="population">
+<input id="feature3" type="text" class="featureInput" name="feature3" readonly placeholder="Feature 3 name" value="stringency_index">
+<input id="feature4" type="text" class="featureInput" name="feature4" readonly placeholder="Feature 4 name" value="human_development_index">
+"""
+
+icuCoefficientHtml = """
+<input id="intercept" type="number" step="any" class="coefficientInput" readonly name="coefficient1" value="22.058856">
+<input id="coefficient1" type="number" step="any" class="coefficientInput" readonly name="coefficient1" value="16.522938">
+<input id="coefficient2" type="number" step="any" class="coefficientInput" readonly name="coefficient2" value="1.885017">
+<input id="coefficient3" type="number" step="any" class="coefficientInput" readonly name="coefficient3" value="5.626492">
+<input id="coefficient4" type="number" step="any" class="coefficientInput" readonly name="coefficient4" value="-1.746058">
+"""
 def display(msg):
 	print(msg)
 	document.getElementById("outputMsg").innerHTML = msg
@@ -34,12 +60,16 @@ def gen_random_int(number,seed):
 		result.append(i)
 	random.shuffle(result)
 	return result
-	
+
 def predict():
+	global icuPred
 	n = document.getElementsByClassName("featureInput").length
 	for i in range(n):
-		print(document.getElementById(f"featureVal{i+1}").value, document.getElementById(f"coefficient{i+1}").value)
-		if document.getElementById(f"featureVal{i+1}").value == "" or document.getElementById(f"coefficient{i+1}").value == "":
+		i = int(i)
+		#print(document.getElementById(f"featureVal{i+1}").value)
+		featValIdStr = "featureVal{0}".format(i+1)
+		coefIdStr ="coefficient{0}".format(i+1)
+		if document.getElementById(featValIdStr).value == "" or document.getElementById(coefIdStr).value == "":
 			display("Please enter a value for all features and coefficients")
 			return
 	featureValList = []
@@ -49,17 +79,25 @@ def predict():
 	targetName = document.getElementById("target").value
 	interceptVal = float(document.getElementById("intercept").value)
 	for i in range(n):
-		featVal = float(document.getElementById(f"featureVal{i+1}").value)
-		feat = document.getElementById(f"feature{i+1}").value
-		beta = float(document.getElementById(f"coefficient{i+1}").value)
+		featValIdStr = "featureVal{0}".format(i+1)
+		featIdStr = "feature{0}".format(i+1)
+		coefIdStr ="coefficient{0}".format(i+1)
+		featVal = float(document.getElementById(featValIdStr).value)
+		feat = document.getElementById(featIdStr).value
+		beta = float(document.getElementById(coefIdStr).value)
 		featureValList.append(featVal)
 		featureList.append(feat)
 		betaList.append(beta)
 	if "" in featureList or targetName == "":
 		display("Please enter a name for all your features and target")
 	else:
-		for num1, num2 in zip(featureValList, betaList):
-			productsList.append(num1 * num2)
+		if icuPred:
+			#perform transformation for ICU feats
+			for idx, val in enumerate(featureValList):
+				featureValList[idx] = (val - meanList[idx])/stdList[idx]
+
+		for featVal, betaVal in zip(featureValList, betaList):
+			productsList.append(featVal * betaVal)
 		prediction = round(interceptVal + sum(productsList),3)
 		output = f"Predicting {targetName} with {n} features:<br /><br />"
 		output += f"Intercept: {interceptVal}<br />"
@@ -82,6 +120,32 @@ def reset():
 	document.getElementById("featureNameDiv").innerHTML = defaultFeatureHtml
 	document.getElementById("coefficientDiv").innerHTML = defaultCoefficientHtml
 	display("Features Reset!")
+
+def toggleIcuPred():
+	global icuPred
+	if icuPred: # Mean it was alrdy on, we are turning it off
+		reset()
+		document.getElementById("target").innerHTML = "<input id='target' type='text' class='targetInput' name='target' placeholder='Target Name'>"
+		document.getElementById("add").disabled = False
+		document.getElementById("remove").disabled = False
+		document.getElementById("reset").disabled = False
+		document.getElementById("target").value = ''
+		document.getElementById("target").readonly = False
+		icuPred = False
+		display("Turning off ICU Predictions")
+	else:
+		# turn on icu pred functionalities
+		document.getElementById("featureValDiv").innerHTML = icuFeatureValHtml
+		document.getElementById("featureNameDiv").innerHTML = icuFeatureHtml
+		document.getElementById("coefficientDiv").innerHTML = icuCoefficientHtml
+		document.getElementById("target").value = 'Daily ICU occupancy per million'
+		document.getElementById("target").readonly = True
+		#"<input id='target' type='text' class='targetInput' readonly='readonly' name='target' value='Daily ICU occupancy per million'>"
+		document.getElementById("add").disabled = True
+		document.getElementById("remove").disabled = True
+		document.getElementById("reset").disabled = True
+		icuPred = True
+		display("Turning on ICU Predictions")
 
 def addFeatures():
 	newN = document.getElementsByClassName("featureInput").length + 1
