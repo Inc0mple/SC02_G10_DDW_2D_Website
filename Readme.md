@@ -1,4 +1,4 @@
-## Instructions to run on Vocareum (Same as mp_sort):
+## Instructions to run on Vocareum (Same as mp_sort; For submitted version only):
 1.  Go to the root folder SC02_G10_DDW_2D_Website: `cd SC02_G10_DDW_2D_Website`
 2.  Now, activate the virtual environment: `source virtenv/bin/activate`
 3.  Run the following command: `./runflaskvoc.sh`
